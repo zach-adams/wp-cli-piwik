@@ -1,3 +1,24 @@
-"autoload": {
-    "files": [ "command.php" ]
-  }
+{
+    "name": "adrigen/wp-cli-piwik",
+    "type": "command",
+    "description": "Add a `wp piwik` command to support the WP-Piwik plugin",
+    "keywords": ["wp-cli", "piwik", "wp-piwik"],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "authors": [{
+        "name": "Adrian Garner",
+        "homepage": "http://adrian.com.au",
+        "email": "support@adrian.com.au",
+        "role": "Developer"
+    }],
+    "support": {
+		"issues": "https://github.com/adrigen/wp-cli-piwik/issues",
+		"source": "https://github.com/adrigen/wp-cli-piwik/"
+	},
+    "autoload": {
+        "files": [ "command.php" ]
+
+    }
+}
