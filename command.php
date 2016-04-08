@@ -6,7 +6,7 @@ if ( !defined( 'WP_CLI' ) ) return;
 class Piwik_Command extends WP_CLI_Command {
 
     /**
-     *  Set piwik url.
+     * Set piwik url.
      * 
      * ## OPTIONS
      * 
@@ -15,7 +15,7 @@ class Piwik_Command extends WP_CLI_Command {
      * 
      * ## EXAMPLES
      * 
-     *     wp example url http://www.example.com/piwik/ 
+     *     wp piwiki url http://www.example.com/piwik/ 
      *
      * @synopsis <url>
      */
