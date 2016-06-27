@@ -2,6 +2,7 @@
     "name": "adrigen/wp-cli-piwik",
     "type": "command",
     "description": "Add a `wp piwik` command to support the WP-Piwik plugin",
+    "homepage": "https://github.com/adrigen/wp-cli-piwik",
     "keywords": ["wp-cli", "piwik", "wp-piwik"],
     "license": "MIT",
     "require": {
