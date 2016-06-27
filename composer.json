@@ -20,5 +20,11 @@
     "autoload": {
         "files": [ "command.php" ]
 
+    },
+    "extras": {
+        "commands": [
+            "piwiki url",
+            "piwik token"
+        ]
     }
 }
