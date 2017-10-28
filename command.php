@@ -51,8 +51,14 @@ class Piwik_Command extends WP_CLI_Command {
      * @param $args
      */
     function url( $args, $assoc_args ) {
+	   
+		$command = WP_CLI::runcommand("plugin is-installed $this->piwik_plugin", [
+			'return'    =>  true,
+			'parse'     =>  'json'
+		]);
+		
+		WP_CLI::debug(print_r($command, true));
     	
-    	$this->init();
         list( $url ) = $args;
         update_site_option ( 'wp-piwik_global-piwik_url', $url );
         // Print a success message
@@ -74,8 +80,14 @@ class Piwik_Command extends WP_CLI_Command {
      * @synopsis <token>
      */
     function token( $args, $assoc_args ) {
-    	
-    	$this->init();
+	   
+		$command = WP_CLI::runcommand("plugin is-installed $this->piwik_plugin", [
+			'return'    =>  true,
+			'parse'     =>  'json'
+		]);
+		
+		WP_CLI::debug(print_r($command, true));
+		
         list( $token ) = $args;
         update_site_option ( 'wp-piwik_global-piwik_token', $token );
         // Print a success message
