@@ -1,8 +1,8 @@
 {
-    "name": "adrigen/wp-cli-piwik",
+    "name": "zach-adams/wp-cli-piwik",
     "type": "wp-cli-package",
     "description": "Add a `wp piwik` command to support the WP-Piwik plugin",
-    "homepage": "https://github.com/adrigen/wp-cli-piwik",
+    "homepage": "https://github.com/zach-adams/wp-cli-piwik",
     "keywords": ["wp-cli", "piwik", "wp-piwik"],
     "license": "MIT",
     "require": {
@@ -15,8 +15,8 @@
         "role": "Developer"
     }],
     "support": {
-		"issues": "https://github.com/adrigen/wp-cli-piwik/issues",
-		"source": "https://github.com/adrigen/wp-cli-piwik/"
+		"issues": "https://github.com/zach-adams/wp-cli-piwik/issues",
+		"source": "https://github.com/zach-adams/wp-cli-piwik/"
 	},
     "require-dev": {
         "wp-cli/wp-cli": "^1.4.0"
