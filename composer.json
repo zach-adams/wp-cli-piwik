@@ -18,14 +18,11 @@
 		"issues": "https://github.com/adrigen/wp-cli-piwik/issues",
 		"source": "https://github.com/adrigen/wp-cli-piwik/"
 	},
+    "require-dev": {
+        "wp-cli/wp-cli": "^1.4.0"
+    },
     "autoload": {
         "files": [ "command.php" ]
 
-    },
-    "extras": {
-        "commands": [
-            "piwiki url",
-            "piwik token"
-        ]
     }
 }
