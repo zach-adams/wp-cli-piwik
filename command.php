@@ -1,11 +1,43 @@
+#!/usr/local/bin/php
+
+
 <?php
 if ( !defined( 'WP_CLI' ) ) return;
 /**
  * Changes WP-Piwik settings.
  */
 class Piwik_Command extends WP_CLI_Command {
-
-    /**
+	
+	/**
+	 * @var string
+	 */
+	protected $piwik_plugin = 'wp-piwik';
+	
+	/**
+	 * Piwik_Command constructor.
+	 */
+	public function __construct()
+	{
+		$this->check_plugin_installed();
+		
+		parent::__construct();
+	}
+	
+	/**
+	 * Checks to see if the plugin's installed or not
+	 */
+	protected function check_plugin_installed() {
+	
+		$command = WP_CLI::runcommand("plugin is-installed $this->piwik_plugin", [
+			'return'    =>  true,
+			'parse'     =>  'json'
+		]);
+		
+		echo $command;
+	
+	}
+	
+	/**
      * Set piwik url.
      * 
      * ## OPTIONS
@@ -15,9 +47,9 @@ class Piwik_Command extends WP_CLI_Command {
      * 
      * ## EXAMPLES
      * 
-     *     wp piwiki url http://www.example.com/piwik/ 
+     *     wp piwik url http://www.example.com/piwik
      *
-     * @synopsis <url>
+     * @param $args
      */
     function url( $args, $assoc_args ) {
         list( $url ) = $args;
