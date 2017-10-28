@@ -13,13 +13,13 @@ class Piwik_Command extends WP_CLI_Command {
 	protected $piwik_plugin = 'wp-piwik';
 	
 	/**
-	 * Piwik_Command constructor.
+	 * Init actions
 	 */
-	public function __construct()
+	protected function init()
 	{
+		
 		$this->check_plugin_installed();
 		
-		parent::__construct();
 	}
 	
 	/**
@@ -51,10 +51,13 @@ class Piwik_Command extends WP_CLI_Command {
      * @param $args
      */
     function url( $args, $assoc_args ) {
+    	
+    	$this->init();
         list( $url ) = $args;
         update_site_option ( 'wp-piwik_global-piwik_url', $url );
         // Print a success message
         WP_CLI::success( "Url set to: $url" );
+        
     }
     /**
      * Set auth token.
@@ -71,11 +74,15 @@ class Piwik_Command extends WP_CLI_Command {
      * @synopsis <token>
      */
     function token( $args, $assoc_args ) {
+    	
+    	$this->init();
         list( $token ) = $args;
         update_site_option ( 'wp-piwik_global-piwik_token', $token );
         // Print a success message
         WP_CLI::success( "Auth token set to: $token" );
+        
     }
+    
 }
 
 WP_CLI::add_command( 'piwik', 'Piwik_Command' );
