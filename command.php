@@ -32,7 +32,7 @@ class Piwik_Command extends WP_CLI_Command {
 			'parse'     =>  'json'
 		]);
 		
-		echo $command;
+		WP_CLI::debug(print_r($command, true));
 	
 	}
 	
