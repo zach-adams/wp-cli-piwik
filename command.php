@@ -171,6 +171,8 @@ class Piwik_Command extends WP_CLI_Command {
 			'parse'     =>  'json'
 		]);
 		
+		WP_CLI::debug($command);
+		
 		WP_CLI::debug(print_r($command, true));
 		
         list( $token ) = $args;
