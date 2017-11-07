@@ -139,7 +139,7 @@ class Piwik_Command extends WP_CLI_Command {
 			'parse'     =>  'json'
 		]);
 		
-		WP_CLI::debug('test1');
+		WP_CLI::debug(print_r($command));
     	
         list( $url ) = $args;
         update_site_option ( 'wp-piwik_global-piwik_url', $url );
