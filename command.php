@@ -162,18 +162,17 @@ class Piwik_Command extends WP_CLI_Command {
      * @synopsis <token>
      */
     function token( $args, $assoc_args ) {
-    	
-    	WP_CLI::debug('test');
-    	WP_CLI::line('test2');
 	   
-		$command = WP_CLI::runcommand("plugin list --format=json", [
+		$plugins = WP_CLI::runcommand("plugin list --format=json --fields=name", [
 			'return'    =>  true,
 			'parse'     =>  'json'
 		]);
 		
-		WP_CLI::debug($command);
+		WP_CLI::debug(print_r($plugins, true));
 		
-		WP_CLI::debug(print_r($command, true));
+		foreach($plugins as $plugin) {
+			WP_CLI::line("${plugin['name']}");
+	    }
 		
         list( $token ) = $args;
         update_site_option ( 'wp-piwik_global-piwik_token', $token );
