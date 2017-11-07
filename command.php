@@ -162,8 +162,11 @@ class Piwik_Command extends WP_CLI_Command {
      * @synopsis <token>
      */
     function token( $args, $assoc_args ) {
+    	
+    	WP_CLI::debug('test');
+    	WP_CLI::line('test2');
 	   
-		$command = WP_CLI::runcommand("plugin is-installed $this->piwik_plugin", [
+		$command = WP_CLI::runcommand("wp plugin is-installed $this->piwik_plugin", [
 			'return'    =>  true,
 			'parse'     =>  'json'
 		]);
