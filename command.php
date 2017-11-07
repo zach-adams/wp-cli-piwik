@@ -100,7 +100,10 @@ class Piwik_Command extends WP_CLI_Command {
 	protected function init()
 	{
 		
-		$this->check_plugin_installed();
+		if(!$this->check_plugin_installed()) {
+			WP_CLI::error("WP-Piwik plugin not installed!");
+			exit(1);
+		}
 		
 	}
 	
