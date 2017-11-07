@@ -166,10 +166,12 @@ class Piwik_Command extends WP_CLI_Command {
     	WP_CLI::debug('test');
     	WP_CLI::line('test2');
 	   
-		$command = WP_CLI::runcommand("wp plugin is-installed $this->piwik_plugin", [
+		$command = WP_CLI::runcommand("plugin list --format=json", [
 			'return'    =>  true,
 			'parse'     =>  'json'
 		]);
+		
+		WP_CLI::debug($command);
 		
 		WP_CLI::debug(print_r($command, true));
 		
