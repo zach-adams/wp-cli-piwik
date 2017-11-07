@@ -108,13 +108,8 @@ class Piwik_Command extends WP_CLI_Command {
 	 * Checks to see if the plugin's installed or not
 	 */
 	protected function check_plugin_installed() {
-	
-		$command = WP_CLI::runcommand("plugin is-installed $this->piwik_plugin", [
-			'return'    =>  true,
-			'parse'     =>  'json'
-		]);
 		
-		WP_CLI::debug(print_r($command, true));
+		return class_exists('WP_Piwik');
 	
 	}
 	
@@ -162,17 +157,8 @@ class Piwik_Command extends WP_CLI_Command {
      * @synopsis <token>
      */
     function token( $args, $assoc_args ) {
-	   
-		$plugins = WP_CLI::runcommand("plugin list --format=json --fields=name", [
-			'return'    =>  true,
-			'parse'     =>  'json'
-		]);
-		
-		WP_CLI::debug(print_r($plugins, true));
-		
-		foreach($plugins as $plugin) {
-			WP_CLI::line("${plugin['name']}");
-	    }
+    	
+    	$this->init();
 		
         list( $token ) = $args;
         update_site_option ( 'wp-piwik_global-piwik_token', $token );
