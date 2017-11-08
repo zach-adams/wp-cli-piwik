@@ -219,50 +219,74 @@ class Piwik_Command extends WP_CLI_Command {
         WP_CLI::success( "Piwik Path set to: $path" );
         
     }
-	
+    
 	/**
-     * Set piwik url.
-     * 
+     * Enter your Piwik URL.
+     *
      * ## OPTIONS
-     * 
+     *
      * <url>
-     * : Enter your Piwik URL. This is the same URL you use to access your Piwik instance, e.g. http://www.example.com/piwik/
-     * 
+     * : Enter your Piwik URL. This is the same URL you use to access your Piwik instance, e.g. http://www.example.com/piwik/.
+     *
      * ## EXAMPLES
-     * 
-     *     wp piwik url http://www.example.com/piwik
+     *
+     *     wp piwik url http://www.example.com/piwik/
      *
      * @param $args
      */
     public function url( $args, $assoc_args ) {
     	
     	$this->init();
+    	
+    	$default = '';
+    	
         list( $url ) = $args;
-        update_site_option ( 'wp-piwik_global-piwik_url', $url );
+	    
+        if(empty($url)) {
+            $url = $default;
+        }
         
-        WP_CLI::success( "Url set to: $url" );
+        WP_CLI::debug("URL is $url");
+        
+        $this->piwik_settings->setGlobalOption('piwik_url', $url);
+        $this->piwik_settings->save();
+        
+        WP_CLI::success( "Piwik URL set to: $url" );
         
     }
-    /**
-     * Set auth token.
-     * 
-     * ## OPTIONS
-     * 
-     * <token>
-     * : Enter your Piwik auth token here. It is an alphanumerical code like 0a1b2c34d56e78901fa2bc3d45678efa (see WP-Piwik faq for more info)
-     * 
-     * ## EXAMPLES
-     * 
-     *     wp piwik token 0a1b2c34d56e78901fa2bc3d45678efa
+    
+	/**
+     * Enter your Piwik Token.
      *
-     * @synopsis <token>
+     * ## OPTIONS
+     *
+     * <token>
+     * : Enter your Piwik auth token here. It is an alphanumerical code like 0a1b2c34d56e78901fa2bc3d45678efa. See https://wordpress.org/plugins/wp-piwik/faq/.
+     *
+     * ## EXAMPLES
+     *
+     *     wp piwik token a1b2c34d56e78901fa2bc3d45678efa
+     *
+     * @param $args
      */
     public function token( $args, $assoc_args ) {
-		
+    	
+    	$this->init();
+    	
+    	$default = '';
+    	
         list( $token ) = $args;
-        update_site_option ( 'wp-piwik_global-piwik_token', $token );
-        // Print a success message
-        WP_CLI::success( "Auth token set to: $token" );
+	    
+        if(empty($url)) {
+            $token = $default;
+        }
+        
+        WP_CLI::debug("Token is $token");
+        
+        $this->piwik_settings->setGlobalOption('piwik_token', $token);
+        $this->piwik_settings->save();
+        
+        WP_CLI::success( "Piwik Token set to: $token" );
         
     }
     
