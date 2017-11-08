@@ -95,6 +95,11 @@ class Piwik_Command extends WP_CLI_Command {
 	protected $piwik_plugin = 'wp-piwik';
 	
 	/**
+	 * @var \WP_Piwik\Settings
+	 */
+	protected $piwik_settings;
+	
+	/**
 	 * Init actions
 	 */
 	protected function init()
@@ -104,6 +109,8 @@ class Piwik_Command extends WP_CLI_Command {
 			WP_CLI::error("WP-Piwik plugin not installed!");
 			exit(1);
 		}
+		
+		$this->piwik_settings = $this->get_wp_piwik();
 		
 	}
 	
@@ -119,6 +126,8 @@ class Piwik_Command extends WP_CLI_Command {
 	}
 	
 	/**
+	 * Load up the WP_Piwik settings class
+	 *
 	 * @return \WP_Piwik\Settings
 	 */
 	protected function get_wp_piwik()
@@ -155,26 +164,59 @@ class Piwik_Command extends WP_CLI_Command {
      */
     public function mode( $args, $assoc_args ) {
     	
-    	$settings = ['http', 'php', 'cloud', 'disabled'];
-    	$default = 'disabled';
-    	
     	$this->init();
+    	
+    	$available_args = ['http', 'php', 'cloud', 'disabled'];
+    	$default = 'disabled';
     	
         list( $mode ) = $args;
 	    
-        if(!in_array($mode, $settings)) {
+        if(!in_array($mode, $available_args)) {
             $mode = $default;
         }
         
         WP_CLI::debug("Mode is $mode");
         
-        $wp_piwik = $this->get_wp_piwik();
-        
-        $wp_piwik->setGlobalOption('piwik_mode', $mode);
-        $wp_piwik->save();
+        $this->piwik_settings->setGlobalOption('piwik_mode', $mode);
+        $this->piwik_settings->save();
         
         // Print a success message
         WP_CLI::success( "Piwik Mode set to: $mode" );
+        
+    }
+	
+	/**
+     * Set piwik path.
+     *
+     * ## OPTIONS
+     *
+     * <path>
+     * : Enter the file path to your Piwik instance, e.g. /var/www/piwik/.
+     *
+     * ## EXAMPLES
+     *
+     *     wp piwik path /var/www/piwik/
+     *
+     * @param $args
+     */
+    public function path( $args, $assoc_args ) {
+    	
+    	$this->init();
+    	
+    	$default = '';
+    	
+        list( $path ) = $args;
+	    
+        if(empty($path)) {
+            $path = $default;
+        }
+        
+        WP_CLI::debug("Path is $path");
+        
+        $this->piwik_settings->setGlobalOption('piwik_path', $path);
+        $this->piwik_settings->save();
+        
+        WP_CLI::success( "Piwik Path set to: $path" );
         
     }
 	
@@ -197,7 +239,7 @@ class Piwik_Command extends WP_CLI_Command {
     	$this->init();
         list( $url ) = $args;
         update_site_option ( 'wp-piwik_global-piwik_url', $url );
-        // Print a success message
+        
         WP_CLI::success( "Url set to: $url" );
         
     }
