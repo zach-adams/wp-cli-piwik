@@ -290,6 +290,47 @@ class Piwik_Command extends WP_CLI_Command {
         
     }
     
+	/**
+     * You can choose between four tracking code modes
+     *
+     * ## OPTIONS
+     *
+     * <tracking_mode>
+	 * ---
+	 * default - WP-Piwik will use Piwik's standard tracking code.
+	 * js - You can choose this tracking code, to deliver a minified proxy code and to avoid using the files called piwik.js or piwik.php.
+	 * proxy - Use this tracking code to not reveal the Piwik server URL. See https://piwik.org/faq/how-to/#faq_132
+	 * manually - Enter your own tracking code manually. You can choose one of the prior options, pre-configure your tracking code and switch to manually editing at last.
+	 * disabled (default) - If you just want Piwik tracking code disabled, choose this.
+	 * ---
+     *
+     * ## EXAMPLES
+     *
+     *     wp piwik tracking_mode default
+     *
+     * @param $args
+     */
+    public function tracking_mode( $args, $assoc_args ) {
+    	
+    	$this->init();
+    	
+    	$default = '';
+    	
+        list( $tracking_mode ) = $args;
+	    
+        if(empty($tracking_mode)) {
+            $tracking_mode = $default;
+        }
+        
+        WP_CLI::debug("Tracking mode is $tracking_mode");
+        
+        $this->piwik_settings->setGlobalOption('track_mode', $tracking_mode);
+        $this->piwik_settings->save();
+        
+        WP_CLI::success( "Piwik Tracking Mode set to: $tracking_mode" );
+        
+    }
+    
 }
 
 WP_CLI::add_command( 'piwik', 'Piwik_Command' );
