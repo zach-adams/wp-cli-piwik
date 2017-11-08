@@ -109,12 +109,74 @@ class Piwik_Command extends WP_CLI_Command {
 	
 	/**
 	 * Checks to see if the plugin's installed or not
+	 *
+	 * @return bool
 	 */
 	protected function check_plugin_installed() {
 		
 		return class_exists('WP_Piwik');
 	
 	}
+	
+	/**
+	 * @return \WP_Piwik\Settings
+	 */
+	protected function get_wp_piwik()
+	{
+		$wp_piwik = $GLOBALS['wp-piwik'];
+		$wp_piwik_settings = new \WP_Piwik\Settings($wp_piwik);
+		return $wp_piwik_settings;
+	}
+	
+	protected function parse_args($args, $settings, $default)
+	{
+	
+	}
+	
+	/**
+     * Set piwik mode.
+     *
+     * ## OPTIONS
+     *
+     * <mode>
+     * : You can choose between three connection methods - 'http', 'php', 'cloud', and 'disabled'
+	 * ---
+	 * http - This is the default option for a self-hosted Piwik and should work for most configurations. WP-Piwik will connect to Piwik using http(s)
+	 * php - Choose this, if your self-hosted Piwik and WordPress are running on the same machine and you know the full server path to your Piwik instance.
+	 * cloud - If you are using a cloud-hosted Piwik by InnoCraft, you can simply use this option.
+	 * disabled (default) - If you just want Piwik disabled, choose this.
+	 * ---
+     *
+     * ## EXAMPLES
+     *
+     *     wp piwik mode http
+     *
+     * @param $args
+     */
+    public function mode( $args, $assoc_args ) {
+    	
+    	$settings = ['http', 'php', 'cloud', 'disabled'];
+    	$default = 'disabled';
+    	
+    	$this->init();
+    	
+        list( $mode ) = $args;
+	    
+        if(!in_array($mode, $settings)) {
+            $mode = $default;
+        }
+        
+        WP_CLI::debug("Mode is $mode");
+        
+        $wp_piwik = $this->get_wp_piwik();
+        
+        $wp_piwik->setGlobalOption('piwik_mode', $mode);
+        $wp_piwik->save();
+        
+        // Print a success message
+        WP_CLI::success( "Piwik Mode set to: $mode" );
+        
+    }
 	
 	/**
      * Set piwik url.
@@ -130,15 +192,9 @@ class Piwik_Command extends WP_CLI_Command {
      *
      * @param $args
      */
-    function url( $args, $assoc_args ) {
-	   
-		$command = WP_CLI::runcommand("plugin is-installed $this->piwik_plugin", [
-			'return'    =>  true,
-			'parse'     =>  'json'
-		]);
-		
-		WP_CLI::debug(print_r($command));
+    public function url( $args, $assoc_args ) {
     	
+    	$this->init();
         list( $url ) = $args;
         update_site_option ( 'wp-piwik_global-piwik_url', $url );
         // Print a success message
@@ -159,9 +215,7 @@ class Piwik_Command extends WP_CLI_Command {
      *
      * @synopsis <token>
      */
-    function token( $args, $assoc_args ) {
-    	
-    	$this->init();
+    public function token( $args, $assoc_args ) {
 		
         list( $token ) = $args;
         update_site_option ( 'wp-piwik_global-piwik_token', $token );
