@@ -95,6 +95,11 @@ class Piwik_Command extends WP_CLI_Command {
 	protected $piwik_plugin = 'wp-piwik';
 	
 	/**
+	 * @var \WP_Piwik
+	 */
+	protected $piwik;
+	
+	/**
 	 * @var \WP_Piwik\Settings
 	 */
 	protected $piwik_settings;
@@ -110,7 +115,8 @@ class Piwik_Command extends WP_CLI_Command {
 			exit(1);
 		}
 		
-		$this->piwik_settings = $this->get_wp_piwik();
+		$this->piwik = $GLOBALS['wp-piwik'];
+		$this->piwik_settings = new \WP_Piwik\Settings($this->piwik);
 		
 	}
 	
@@ -123,18 +129,6 @@ class Piwik_Command extends WP_CLI_Command {
 		
 		return class_exists('WP_Piwik');
 	
-	}
-	
-	/**
-	 * Load up the WP_Piwik settings class
-	 *
-	 * @return \WP_Piwik\Settings
-	 */
-	protected function get_wp_piwik()
-	{
-		$wp_piwik = $GLOBALS['wp-piwik'];
-		$wp_piwik_settings = new \WP_Piwik\Settings($wp_piwik);
-		return $wp_piwik_settings;
 	}
 	
 	protected function parse_args($args, $settings, $default)
@@ -329,6 +323,13 @@ class Piwik_Command extends WP_CLI_Command {
         $this->piwik_settings->save();
         
         WP_CLI::success( "Piwik Tracking Mode set to: $tracking_mode" );
+        WP_CLI::line( "Updating tracking code..." );
+        
+        if(!$this->piwik->updateTrackingCode()) {
+            WP_CLI::error( "There was an issue updating the tracking code!" );
+        } else {
+            WP_CLI::success( "Updated tracking code!" );
+        }
         
     }
     
