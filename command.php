@@ -277,7 +277,7 @@ class Piwik_Command extends WP_CLI_Command {
     	
         list( $token ) = $args;
 	    
-        if(empty($url)) {
+        if(empty($token)) {
             $token = $default;
         }
         
