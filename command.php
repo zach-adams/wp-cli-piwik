@@ -285,6 +285,40 @@ class Piwik_Command extends WP_CLI_Command {
     }
 	
 	/**
+	 * @throws \WP_CLI\ExitException
+	 */
+	protected function updateTrackingCode() {
+    	
+    	$id = WP_Piwik\Request::register ( 'SitesManager.getJavascriptTag', array (
+				'idSite' => $this->piwik_settings->getOption('site_id'),
+				'mergeSubdomains' => $this->piwik_settings->getGlobalOption ( 'track_across' ) ? 1 : 0,
+				'mergeAliasUrls' => $this->piwik_settings->getGlobalOption ( 'track_across_alias' ) ? 1 : 0,
+				'disableCookies' => $this->piwik_settings->getGlobalOption ( 'disable_cookies' ) ? 1 : 0,
+				'crossDomain' => $this->piwik_settings->getGlobalOption ( 'track_crossdomain_linking' ) ? 1 : 0,
+                'trackNoScript' => 1
+			) );
+		$request = new WP_Piwik\Request\Rest ( $this->piwik, $this->piwik_settings );
+		$code = $request->perform($id);
+		if (is_array($code) && isset($code['value']))
+			$code = $code['value'];
+		$result = !is_array ( $code ) ? html_entity_decode ( $code ) : '<!-- '.json_encode($code).' -->';
+		$result = WP_Piwik\TrackingCode::prepareTrackingCode ( $result, $this->piwik_settings, new \WP_Piwik\Logger\Dummy('dummy'), true );
+		if (isset ( $result ['script'] ) && ! empty ( $result ['script'] )) {
+			$this->piwik_settings->setOption ( 'tracking_code', $result ['script'] );
+			$this->piwik_settings->setOption ( 'noscript_code', $result ['noscript'] );
+			$this->piwik_settings->setGlobalOption ( 'proxy_url', $result ['proxy'] );
+		}
+		
+		if(!$result) {
+            WP_CLI::error("Something went wrong updating the tracking code");
+		} else {
+            WP_CLI::success( "Updated tracking code!" );
+		}
+		$this->piwik_settings->save();
+		
+    }
+	
+	/**
 	 * You can choose between four tracking code modes
 	 *
 	 * ## OPTIONS
@@ -326,37 +360,7 @@ class Piwik_Command extends WP_CLI_Command {
         
         WP_CLI::success( "Piwik Tracking Mode set to: $tracking_mode" );
         
-        
-		$id = WP_Piwik\Request::register ( 'SitesManager.getJavascriptTag', array (
-				'idSite' => $this->piwik_settings->getOption('site_id'),
-				'mergeSubdomains' => $this->piwik_settings->getGlobalOption ( 'track_across' ) ? 1 : 0,
-				'mergeAliasUrls' => $this->piwik_settings->getGlobalOption ( 'track_across_alias' ) ? 1 : 0,
-				'disableCookies' => $this->piwik_settings->getGlobalOption ( 'disable_cookies' ) ? 1 : 0,
-				'crossDomain' => $this->piwik_settings->getGlobalOption ( 'track_crossdomain_linking' ) ? 1 : 0,
-                'trackNoScript' => 1
-			) );
-		$request = new WP_Piwik\Request\Rest ( $this->piwik, $this->piwik_settings );
-		$code = $request->perform($id);
-		if (is_array($code) && isset($code['value']))
-			$code = $code['value'];
-		$result = !is_array ( $code ) ? html_entity_decode ( $code ) : '<!-- '.json_encode($code).' -->';
-		$result = WP_Piwik\TrackingCode::prepareTrackingCode ( $result, $this->piwik_settings, new \WP_Piwik\Logger\Dummy('dummy'), true );
-		if (isset ( $result ['script'] ) && ! empty ( $result ['script'] )) {
-			$this->piwik_settings->setOption ( 'tracking_code', $result ['script'] );
-			$this->piwik_settings->setOption ( 'noscript_code', $result ['noscript'] );
-			$this->piwik_settings->setGlobalOption ( 'proxy_url', $result ['proxy'] );
-		}
-		$this->piwik_settings->save();
-		return $result;
-        
-        
-        /**
-        
-        if(!$this->piwik->updateTrackingCode()) {
-            WP_CLI::error( "There was an issue updating the tracking code!" );
-        } else {
-            WP_CLI::success( "Updated tracking code!" );
-        }*/
+        $this->updateTrackingCode();
         
     }
     
