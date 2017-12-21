@@ -395,7 +395,11 @@ class Piwik_Command extends WP_CLI_Command {
 		
 		$this->init();
 		
-		$seconds = intval($args);
+		if(isset($args[0])) {
+			$seconds = intval($args[0]);
+		} else {
+			$seconds = 0;
+		}
 		
 		if($seconds < 0) {
 			WP_CLI::error( "Must be a number above 0!" );
