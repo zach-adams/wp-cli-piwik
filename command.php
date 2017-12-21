@@ -309,7 +309,7 @@ class Piwik_Command extends WP_CLI_Command {
 		}
 		$result = ! is_array( $code ) ? html_entity_decode( $code ) : '<!-- ' . json_encode( $code ) . ' -->';
 		$result = WP_Piwik\TrackingCode::prepareTrackingCode( $result, $this->piwik_settings,
-			new \WP_Piwik\Logger\Dummy( 'dummy' ), true );
+			new \WP_Piwik\Logger\Dummy( 'dummy' ) );
 		if ( isset ( $result ['script'] ) && ! empty ( $result ['script'] ) ) {
 			$this->piwik_settings->setOption( 'tracking_code', $result ['script'] );
 			$this->piwik_settings->setOption( 'noscript_code', $result ['noscript'] );
