@@ -283,27 +283,30 @@ class Piwik_Command extends WP_CLI_Command {
         WP_CLI::success( "Piwik Token set to: $token" );
         
     }
-    
+	
 	/**
-     * You can choose between four tracking code modes
-     *
-     * ## OPTIONS
-     *
-     * <tracking_mode>
+	 * You can choose between four tracking code modes
+	 *
+	 * ## OPTIONS
+	 *
+	 * <tracking_mode>
 	 * ---
 	 * default - WP-Piwik will use Piwik's standard tracking code.
-	 * js - You can choose this tracking code, to deliver a minified proxy code and to avoid using the files called piwik.js or piwik.php.
-	 * proxy - Use this tracking code to not reveal the Piwik server URL. See https://piwik.org/faq/how-to/#faq_132
-	 * manually - Enter your own tracking code manually. You can choose one of the prior options, pre-configure your tracking code and switch to manually editing at last.
-	 * disabled (default) - If you just want Piwik tracking code disabled, choose this.
+	 * js - You can choose this tracking code, to deliver a minified proxy code and to avoid using the files
+	 * called piwik.js or piwik.php. proxy - Use this tracking code to not reveal the Piwik server URL. See
+	 * https://piwik.org/faq/how-to/#faq_132 manually - Enter your own tracking code manually. You can choose one
+	 * of the prior options, pre-configure your tracking code and switch to manually editing at last. disabled
+	 * (default) - If you just want Piwik tracking code disabled, choose this.
 	 * ---
-     *
-     * ## EXAMPLES
-     *
-     *     wp piwik tracking_mode default
-     *
-     * @param $args
-     */
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp piwik tracking_mode default
+	 *
+	 * @param $args
+	 *
+	 * @throws \WP_CLI\ExitException
+	 */
     public function tracking_mode( $args, $assoc_args ) {
     	
     	$this->init();
@@ -323,13 +326,122 @@ class Piwik_Command extends WP_CLI_Command {
         $this->piwik_settings->save();
         
         WP_CLI::success( "Piwik Tracking Mode set to: $tracking_mode" );
-        WP_CLI::line( "Updating tracking code..." );
         
         if(!$this->piwik->updateTrackingCode()) {
             WP_CLI::error( "There was an issue updating the tracking code!" );
         } else {
             WP_CLI::success( "Updated tracking code!" );
         }
+        
+    }
+    
+	/**
+     * Enable or disable cache
+     *
+     * ## OPTIONS
+     *
+     * <enable_disable>
+	 * : Enable/Disable caching of API calls
+     *
+     * ## EXAMPLES
+     *
+     *     wp piwik cache enable
+     *
+     * @param $args
+     */
+    public function cache( $args, $assoc_args ) {
+    	
+    	$this->init();
+    	
+    	$available_args = ['enable', 'disable'];
+    	$default = 'enable';
+    	
+        list( $cache ) = $args;
+	    
+        if(!in_array($cache, $available_args)) {
+            $cache = $default;
+        }
+        
+        WP_CLI::debug("Cache is $cache" . "d");
+        
+        $this->piwik_settings->setGlobalOption('cache', ($cache === 'enable') ? true : false);
+        $this->piwik_settings->save();
+        
+        WP_CLI::success( "Piwik Cache set to: $cache" );
+        
+    }
+    
+	/**
+     * Enable or disable DNS prefetch.
+	 * See https://piwik.org/blog/2017/04/important-performance-optimizations-load-piwik-javascript-tracker-faster/
+     *
+     * ## OPTIONS
+     *
+     * <enable_disable>
+	 * : Enable/disable a DNS prefetch tag.
+     *
+     * ## EXAMPLES
+     *
+     *     wp piwik dns_prefetch enable
+     *
+     * @param $args
+     */
+    public function dns_prefetch( $args, $assoc_args ) {
+    	
+    	$this->init();
+    	
+    	$available_args = ['enable', 'disable'];
+    	$default = 'enable';
+    	
+        list( $dns_prefetch ) = $args;
+	    
+        if(!in_array($dns_prefetch, $available_args)) {
+            $dns_prefetch = $default;
+        }
+        
+        WP_CLI::debug("DNS Prefetch is $dns_prefetch" . "d");
+        
+        $this->piwik_settings->setGlobalOption('dnsprefetch', ($dns_prefetch === 'enable') ? true : false);
+        $this->piwik_settings->save();
+        
+        WP_CLI::success( "Piwik DNS Prefetch set to: $dns_prefetch" );
+        
+    }
+    
+	/**
+     * Enable or disable adding data-cfasync=false to the script tag
+	 * See https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-my-script-s-in-Automatic-Mode-
+     *
+     * ## OPTIONS
+     *
+     * <enable_disable>
+	 * : Add/remove data-cfasync=false to/from the script tag.
+     *
+     * ## EXAMPLES
+     *
+     *     wp piwik data_cfasync enable
+     *
+     * @param $args
+     */
+    public function data_cfasync( $args, $assoc_args ) {
+    	
+    	$this->init();
+    	
+    	$available_args = ['enable', 'disable'];
+    	$default = 'enable';
+    	
+        list( $data_cfasync ) = $args;
+	    
+        if(!in_array($data_cfasync, $available_args)) {
+            $data_cfasync = $default;
+        }
+        
+        WP_CLI::debug("Data CFA-Sync is $data_cfasync" . "d");
+        
+        $this->piwik_settings->setGlobalOption('track_datacfasync', ($data_cfasync === 'enable') ? true : false);
+        $this->piwik_settings->save();
+        
+        WP_CLI::success( "Piwik Data CFA-Sync set to: $data_cfasync" );
         
     }
     
