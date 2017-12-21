@@ -331,7 +331,8 @@ class Piwik_Command extends WP_CLI_Command {
         } else {
             WP_CLI::success( "Updated tracking code!" );
         }
-        $this->piwik_settings->save();
+        
+        $this->piwik->getPiwikSiteId();
         
     }
     
