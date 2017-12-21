@@ -323,7 +323,6 @@ class Piwik_Command extends WP_CLI_Command {
         WP_CLI::debug("Tracking mode is $tracking_mode");
         
         $this->piwik_settings->setGlobalOption('track_mode', $tracking_mode);
-        $this->piwik_settings->save();
         
         WP_CLI::success( "Piwik Tracking Mode set to: $tracking_mode" );
         
@@ -332,6 +331,7 @@ class Piwik_Command extends WP_CLI_Command {
         } else {
             WP_CLI::success( "Updated tracking code!" );
         }
+        $this->piwik_settings->save();
         
     }
     
