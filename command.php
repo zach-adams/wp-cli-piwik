@@ -372,6 +372,49 @@ class Piwik_Command extends WP_CLI_Command {
 	}
 	
 	/**
+	 * Enable or disable the heartbeat timer. (0 is disable, any other integer enables it and is the number of
+	 * seconds between heartbeats)
+	 *
+	 * ## OPTIONS
+	 *
+	 * <seconds>
+	 * ---
+	 * 0 - disabled (default)
+	 * 1+ - seconds between heartbeat checks
+	 * ---
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp piwik heartbeat 15
+	 *
+	 * @param $args
+	 *
+	 * @throws \WP_CLI\ExitException
+	 */
+	public function heartbeat( $args, $assoc_args ) {
+		
+		$this->init();
+		
+		$seconds = intval($args);
+		
+		if($seconds < 0) {
+			WP_CLI::error( "Must be a number above 0!" );
+			$seconds = 0;
+		} elseif($seconds >= PHP_INT_MAX) {
+			$seconds = PHP_INT_MAX-1;
+		}
+		
+		WP_CLI::debug( "Setting heartbeat timer to $seconds" );
+		
+		$this->piwik_settings->setGlobalOption( 'track_heartbeat', $seconds );
+		
+		WP_CLI::success( "Successfully Piwik Heatbeat Timer set to: $seconds!" );
+		
+		$this->updateTrackingCode();
+		
+	}
+	
+	/**
 	 * Enable or disable cache
 	 *
 	 * ## OPTIONS
